@@ -1,0 +1,32 @@
+[Unit]
+Description=Ghostty system console on %I
+After=systemd-user-sessions.service systemd-vconsole-setup.service plymouth-quit-wait.service
+Before=getty.target
+Conflicts=getty@%i.service kmsconvt@%i.service
+OnFailure=getty@%i.service
+IgnoreOnIsolate=yes
+ConditionPathExists=/dev/%I
+StartLimitIntervalSec=60
+StartLimitBurst=4
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/ghostty-console/tty6.env
+WorkingDirectory=/
+ExecStart=/usr/local/bin/ghostty-console --config-file /etc/ghostty-console/config login-service ${CON_RENDER_USER}
+ExecStopPost=/usr/local/bin/ghostty-console login-cleanup
+StandardInput=tty-force
+StandardOutput=journal
+StandardError=journal
+TTYPath=/dev/%I
+TTYReset=yes
+TTYVHangup=yes
+TTYVTDisallocate=yes
+UtmpIdentifier=%I
+KillMode=control-group
+TimeoutStopSec=5
+Restart=always
+RestartSec=2
+
+[Install]
+WantedBy=getty.target

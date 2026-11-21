@@ -1,0 +1,3 @@
+#!/bin/sh
+# Invoked by system login only after PAM succeeds. No user shell startup files.
+exec /usr/local/bin/ghostty-console login-shell
